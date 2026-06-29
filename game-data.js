@@ -1,332 +1,214 @@
-// 선택지 태그 분류
+// ===== 태그 분류 =====
 const TAGS = {
-    PACKAGED_GREED: "포장된 욕심",       // 신앙으로 포장한 이기심
-    PEER_PRESSURE: "또래 압박",          // 주변 분위기에 휩쓸림
-    POSTPONE: "미루기",                  // 나중에 하겠다는 합리화
-    IDOL_MONEY: "물질 우상화",           // 돈이 하나님보다 위에
-    NINETY_PERCENT: "90%는 내 것",       // 십일조 후 나머지는 자유
-    SELF_RATIONALIZE: "자기합리화",       // 그럴듯한 변명
-    HONEST_ADMIT: "솔직한 인정",         // 내 욕심을 인정
-    FAITH_FIRST: "신앙 우선",            // 하나님/예배를 우선
-    STEWARD_CONFESS: "청지기 고백",      // 모든 것이 하나님의 것
-    PRAYER_DECIDE: "기도 후 결정",       // 성급히 결정하지 않음
-    TRUST_GOD: "하나님 신뢰",            // 채워주심을 믿음
-    SELF_CHECK: "자기 점검",             // 내 마음을 돌아봄
-    SMALL_DISHONEST: "작은 부정직",      // 사소한 부정직
-    HONESTY: "정직",                     // 하나님 앞에 정직
-    CONTENTMENT: "만족",                 // 있는 것에 감사
-    COMPARISON: "비교/원망",             // 남과 비교하며 불만
-    FUTURE_ANXIETY: "미래 불안",         // 미래에 대한 두려움
-    IMPULSE: "충동/탐욕",               // 순간적 욕심
-    COMMUNITY: "공동체 의지",            // 교회 공동체에 도움 요청
-    DECISION: "결단"                     // 과감한 신앙적 결단
+    PACKAGED_GREED: "포장된 욕심",
+    PEER_PRESSURE: "또래 압박",
+    POSTPONE: "미루기",
+    IDOL_MONEY: "물질 우상화",
+    NINETY_PERCENT: "90%는 내 것",
+    SELF_RATIONALIZE: "자기합리화",
+    HONEST_ADMIT: "솔직한 인정",
+    FAITH_FIRST: "신앙 우선",
+    STEWARD_CONFESS: "청지기 고백",
+    PRAYER_DECIDE: "기도 후 결정",
+    TRUST_GOD: "하나님 신뢰",
+    SELF_CHECK: "자기 점검",
+    SMALL_DISHONEST: "작은 부정직",
+    HONESTY: "정직",
+    CONTENTMENT: "만족",
+    COMPARISON: "비교/원망",
+    FUTURE_ANXIETY: "미래 불안",
+    IMPULSE: "충동/탐욕",
+    COMMUNITY: "공동체 의지",
+    DECISION: "결단",
+    FOMO: "FOMO",
+    SELF_WORTH_MONEY: "돈=자존감"
 };
 
-// 12개 상황 카드 데이터
-const SITUATION_CARDS = [
+// ===== 보드판 12칸 구성 =====
+// 유형: choice(선택), event(이벤트), sharing(나눔)
+const BOARD_CELLS = [
+    { id: 0, type: "start", name: "출발", icon: "🚀" },
+    { id: 1, type: "choice", name: "선택", icon: "🤔", cardIndex: 0 },
+    { id: 2, type: "choice", name: "선택", icon: "🤔", cardIndex: 1 },
+    { id: 3, type: "event", name: "이벤트", icon: "⚡", eventIndex: 0 },
+    { id: 4, type: "choice", name: "선택", icon: "🤔", cardIndex: 2 },
+    { id: 5, type: "choice", name: "선택", icon: "🤔", cardIndex: 3 },
+    { id: 6, type: "sharing", name: "나눔", icon: "💬", sharingIndex: 0 },
+    { id: 7, type: "choice", name: "선택", icon: "🤔", cardIndex: 4 },
+    { id: 8, type: "choice", name: "선택", icon: "🤔", cardIndex: 5 },
+    { id: 9, type: "event", name: "이벤트", icon: "⚡", eventIndex: 1 },
+    { id: 10, type: "choice", name: "선택", icon: "🤔", cardIndex: 6 },
+    { id: 11, type: "choice", name: "선택", icon: "🤔", cardIndex: 7 },
+    { id: 12, type: "sharing", name: "나눔", icon: "💬", sharingIndex: 1 }
+];
+
+// ===== 선택 칸 카드 8개 =====
+// 체크리스트 5영역 반영:
+// 1. 가치관과 자존감 / 2. 소비와 소유 / 3. 염려와 신앙 / 4. 관계와 비전 / 5. 투자인가 탐욕인가
+const CHOICE_CARDS = [
     {
         id: 1,
-        category: "주식/코인",
-        icon: "📈",
-        title: "친구의 코인 권유",
-        situation: "친구가 \"20대에 안 하면 늦어, 10만원만 넣어봐\"라며 코인 앱을 보여준다. 최근 수익 인증도 보여줬다.",
+        category: "가치관과 자존감",
+        icon: "👤",
+        title: "SNS 속 비교",
+        situation: "SNS에서 친구가 새 맥북, 해외여행 사진을 올렸다. 나는 중고 노트북에 알바비로 겨우 생활 중이다. 자존감이 흔들린다.",
         choices: [
-            {
-                text: "소액이니까 해본다. 수익 나면 감사헌금 드리지 뭐",
-                tag: TAGS.PACKAGED_GREED
-            },
-            {
-                text: "해본다. 다들 하는데 나만 안 하면 뒤처지니까",
-                tag: TAGS.PEER_PRESSURE
-            },
-            {
-                text: "안 한다. 지금은 공부에 집중할 때다",
-                tag: TAGS.SELF_CHECK
-            },
-            {
-                text: "안 한다. 차트 보느라 예배 집중 못 할까봐 걱정된다",
-                tag: TAGS.FAITH_FIRST
-            }
+            { text: "나도 무리해서라도 비슷한 수준을 맞춰야겠다", tag: TAGS.SELF_WORTH_MONEY },
+            { text: "부럽지만 내 형편에서 감사할 것을 찾아본다", tag: TAGS.CONTENTMENT },
+            { text: "솔직히 열등감 느낀다. 돈이 더 있었으면 좋겠다", tag: TAGS.HONEST_ADMIT },
+            { text: "SNS를 좀 줄여야겠다. 비교가 나를 갉아먹고 있다", tag: TAGS.DECISION }
         ]
     },
     {
         id: 2,
-        category: "재물관",
-        icon: "💰",
-        title: "첫 아르바이트 월급",
-        situation: "첫 알바비 80만원이 들어왔다. 내 시간, 내 땀으로 번 돈이다. 이 돈을 어떻게 써야 할까?",
+        category: "소비와 소유",
+        icon: "🛒",
+        title: "충동구매의 유혹",
+        situation: "스트레스받은 날, 좋아하는 브랜드에서 한정판이 나왔다. \"나한테 주는 선물\"이라고 생각하면 살 수 있긴 하다. 이번 달 생활비가 빠듯해진다.",
         choices: [
-            {
-                text: "8만원 십일조 드린다. 나머지는 내가 번 거니까 자유롭게 쓴다",
-                tag: TAGS.NINETY_PERCENT
-            },
-            {
-                text: "십일조 드리고, 이 돈 전부가 하나님 것임을 고백한다",
-                tag: TAGS.STEWARD_CONFESS
-            },
-            {
-                text: "이번 달은 빠듯하니까 다음 달에 몰아서 드린다",
-                tag: TAGS.POSTPONE
-            },
-            {
-                text: "하나님 것이라는데... 솔직히 와닿지 않아서 그냥 쓴다",
-                tag: TAGS.HONEST_ADMIT
-            }
+            { text: "산다. 스트레스 해소도 필요하잖아. 내가 번 돈인데", tag: TAGS.NINETY_PERCENT },
+            { text: "산다. 다음 달에 아끼면 되지. 한정판은 지금뿐이니까", tag: TAGS.IMPULSE },
+            { text: "안 산다. 없어도 사는 데 지장 없다", tag: TAGS.CONTENTMENT },
+            { text: "사고 싶지만 참는다. 근데 왜 이렇게 물건으로 위로받고 싶지?", tag: TAGS.SELF_CHECK }
         ]
     },
     {
         id: 3,
-        category: "직장/진로",
-        icon: "🎯",
-        title: "인턴 vs 단기선교",
-        situation: "방학에 대기업 인턴 기회가 왔다. 그런데 교회 여름 단기선교 일정과 정확히 겹친다. 인턴은 이번이 마지막 기회일 수 있다.",
+        category: "염려와 신앙",
+        icon: "😰",
+        title: "통장 잔고와 불안",
+        situation: "통장에 20만원밖에 없다. 다음 달 등록금도 걱정이다. 이번 주일 헌금을 드릴지 말지 고민된다.",
         choices: [
-            {
-                text: "인턴 간다. 좋은 데 취직하면 나중에 더 크게 섬기지",
-                tag: TAGS.PACKAGED_GREED
-            },
-            {
-                text: "인턴 간다. 현실적으로 이 기회는 다시 안 온다",
-                tag: TAGS.FUTURE_ANXIETY
-            },
-            {
-                text: "단기선교 간다. 이 시간은 돈으로 살 수 없으니까",
-                tag: TAGS.FAITH_FIRST
-            },
-            {
-                text: "기도하며 결정한다. 급하게 움직이지 않는다",
-                tag: TAGS.PRAYER_DECIDE
-            }
+            { text: "헌금을 줄인다. 현실적으로 지금은 내가 먼저 살아야 한다", tag: TAGS.SELF_RATIONALIZE },
+            { text: "빠듯해도 드린다. 하나님이 채워주실 거라 믿는다", tag: TAGS.TRUST_GOD },
+            { text: "안 드린다. 솔직히 통장 잔고가 내 안전지대인데 그게 흔들리니 무섭다", tag: TAGS.HONEST_ADMIT },
+            { text: "공동체에 상황을 나누고 기도를 부탁한다", tag: TAGS.COMMUNITY }
         ]
     },
     {
         id: 4,
-        category: "주식/코인",
-        icon: "📱",
-        title: "예배 중 차트 확인",
-        situation: "코인에 50만원을 넣었는데, 예배 시간에 가격이 급등락 중이라는 알림이 왔다. 핸드폰이 계속 진동한다.",
+        category: "염려와 신앙",
+        icon: "⏰",
+        title: "돈 벌 기회 vs 신앙생활",
+        situation: "주말 알바 제안이 왔다. 토요모임·주일예배 시간과 겹친다. 받으면 이번 달이 한결 여유로워진다.",
         choices: [
-            {
-                text: "예배 중에 몰래 핸드폰을 확인한다",
-                tag: TAGS.IDOL_MONEY
-            },
-            {
-                text: "예배 끝나고 본다. 어차피 소액이니까",
-                tag: TAGS.SELF_RATIONALIZE
-            },
-            {
-                text: "불안해서 예배에 집중이 안 된다. 이게 맞나 싶다",
-                tag: TAGS.SELF_CHECK
-            },
-            {
-                text: "이 정도면 투자가 아니라 도박인 것 같아서 정리하기로 한다",
-                tag: TAGS.DECISION
-            }
+            { text: "알바 한다. 지금은 돈 모을 때다. 신앙생활은 나중에 여유 생기면", tag: TAGS.POSTPONE },
+            { text: "알바 한다. 이 돈으로 헌금 더 하면 되지", tag: TAGS.PACKAGED_GREED },
+            { text: "거절한다. 예배와 공동체가 우선이다", tag: TAGS.FAITH_FIRST },
+            { text: "고민된다. 둘 다 중요한데 시간이 겹치니 답이 없다", tag: TAGS.HONEST_ADMIT }
         ]
     },
     {
         id: 5,
-        category: "재물관",
-        icon: "🛍️",
-        title: "세일의 유혹",
-        situation: "좋아하는 브랜드 70% 세일 마지막 날. \"지금 안 사면 손해\"라는 느낌이 강하다. 이번 달 생활비는 빠듯하다.",
+        category: "투자인가 탐욕인가",
+        icon: "📈",
+        title: "코인 FOMO",
+        situation: "주변에서 주식이나 코인으로 \"대박\" 소식이 들린다. \"나만 뒤처지는 것 같다\"는 불안감이 든다. 친구가 같이 하자고 권유한다.",
         choices: [
-            {
-                text: "신용카드로 산다. 세일 기회는 지금뿐이니까",
-                tag: TAGS.IMPULSE
-            },
-            {
-                text: "필요한 것만 산다. 사고 싶은 것 다 살 수는 없으니까",
-                tag: TAGS.SELF_CHECK
-            },
-            {
-                text: "안 산다. 없어도 살 수 있다",
-                tag: TAGS.CONTENTMENT
-            },
-            {
-                text: "산다. 십일조 냈으니 나머지는 내 자유지",
-                tag: TAGS.NINETY_PERCENT
-            }
+            { text: "해본다. 다들 하는데 나만 안 하면 바보 같잖아", tag: TAGS.FOMO },
+            { text: "해본다. 소액이니까. 수익 나면 감사헌금 드리지", tag: TAGS.PACKAGED_GREED },
+            { text: "안 한다. 쉽게 벌려는 마음이 탐욕인 것 같다", tag: TAGS.SELF_CHECK },
+            { text: "안 한다. 지금 내가 집중할 것은 따로 있다", tag: TAGS.FAITH_FIRST }
         ]
     },
     {
         id: 6,
-        category: "직장/진로",
-        icon: "⏰",
-        title: "토요모임 vs 알바",
-        situation: "이번 달 등록금이 부족하다. 토요일 교회 청년부 모임 대신 알바를 뛰면 딱 맞출 수 있다.",
+        category: "관계와 비전",
+        icon: "🎯",
+        title: "취업 목표의 본심",
+        situation: "취준 중이다. \"대기업 가서 영향력 발휘하겠다\"고 기도하는데, 문득 스스로에게 물어본다. 진짜 이유가 뭐지?",
         choices: [
-            {
-                text: "이번 주만 빠진다. 급하니까 어쩔 수 없지",
-                tag: TAGS.POSTPONE
-            },
-            {
-                text: "공동체에 상황을 나누고 기도를 부탁한다",
-                tag: TAGS.COMMUNITY
-            },
-            {
-                text: "알바를 뛴다. 현실이 우선이지, 하나님도 이해하시겠지",
-                tag: TAGS.SELF_RATIONALIZE
-            },
-            {
-                text: "교회 가되, 등록금 걱정에 마음이 무겁다. 하나님께 맡긴다",
-                tag: TAGS.TRUST_GOD
-            }
+            { text: "솔직히 연봉 높고 남들한테 인정받고 싶어서다", tag: TAGS.HONEST_ADMIT },
+            { text: "영향력도 있고 헌금도 많이 할 수 있으니까 둘 다 맞는 거지", tag: TAGS.PACKAGED_GREED },
+            { text: "하나님이 보내시는 곳이면 중소기업이어도 간다", tag: TAGS.FAITH_FIRST },
+            { text: "내 동기가 뭔지 솔직히 모르겠다. 점검이 필요하다", tag: TAGS.SELF_CHECK }
         ]
     },
     {
         id: 7,
-        category: "기타",
-        icon: "📋",
-        title: "장학금 용도",
-        situation: "국가 장학금을 받았다. 학업용으로 제한된 돈인데, 사실 확인하는 사람은 없다. 생활비가 부족한 상황이다.",
+        category: "관계와 비전",
+        icon: "👥",
+        title: "교회 안에서의 비교",
+        situation: "같은 또래 교회 친구는 부모님 지원으로 여유롭게 봉사한다. 나는 생활비 벌어야 해서 시간도 돈도 없다. 교회에서 그 친구의 직업, 경제력이 은연중에 의식된다.",
         choices: [
-            {
-                text: "어차피 확인 안 하니까 생활비로 쓴다",
-                tag: TAGS.SMALL_DISHONEST
-            },
-            {
-                text: "학업용으로만 쓴다. 제도의 취지를 지킨다",
-                tag: TAGS.HONESTY
-            },
-            {
-                text: "학업비로 쓰고, 아낀 생활비로 어려운 친구를 돕는다",
-                tag: TAGS.STEWARD_CONFESS
-            },
-            {
-                text: "규정대로 쓰되, 솔직히 답답하다. 생활비가 진짜 부족한데...",
-                tag: TAGS.HONEST_ADMIT
-            }
+            { text: "억울하다. 환경이 다른데 같은 걸 기대하지 마", tag: TAGS.COMPARISON },
+            { text: "나도 빨리 돈 벌어서 저렇게 여유 있게 살고 싶다", tag: TAGS.IDOL_MONEY },
+            { text: "각자 형편에서 최선을 다하면 된다. 비교를 내려놓는다", tag: TAGS.CONTENTMENT },
+            { text: "솔직히 하나님이 불공평하다고 느낀다", tag: TAGS.HONEST_ADMIT }
         ]
     },
     {
         id: 8,
-        category: "재물관",
-        icon: "😤",
-        title: "교회 안 비교",
-        situation: "같은 또래 교회 친구는 부모님 지원으로 여유롭게 봉사한다. 나는 생활비 벌어야 해서 봉사 시간도 없다.",
-        choices: [
-            {
-                text: "억울하다. 환경이 다른데 같은 걸 기대하지 마",
-                tag: TAGS.COMPARISON
-            },
-            {
-                text: "나도 저렇게 되고 싶다. 빨리 돈 벌어야겠다",
-                tag: TAGS.IDOL_MONEY
-            },
-            {
-                text: "각자 처한 형편에서 최선을 다하면 된다",
-                tag: TAGS.CONTENTMENT
-            },
-            {
-                text: "하나님이 불공평하신 것 같다. 솔직히 화가 난다",
-                tag: TAGS.HONEST_ADMIT
-            }
-        ]
-    },
-    {
-        id: 9,
-        category: "주식/코인",
+        category: "소비와 소유",
         icon: "💸",
-        title: "수익금과 십일조",
-        situation: "주식으로 30만원 수익이 났다. 내가 직접 분석하고 공부해서 번 돈이다. 십일조를 내야 할까?",
+        title: "헌금할 때의 마음",
+        situation: "십일조를 드리려고 계산기를 두드리는데, '아깝다'는 생각이 올라온다. 이 돈이면 사고 싶은 게 있는데...",
         choices: [
-            {
-                text: "내 실력으로 번 건데 십일조를 왜 내? 노동소득도 아닌데",
-                tag: TAGS.NINETY_PERCENT
-            },
-            {
-                text: "수익에서도 3만원 십일조 드린다. 이것도 하나님이 허락하신 것",
-                tag: TAGS.STEWARD_CONFESS
-            },
-            {
-                text: "원금 회복한 거니까 수익이 아니야. 안 내도 돼",
-                tag: TAGS.SELF_RATIONALIZE
-            },
-            {
-                text: "내야 하나... 귀찮은데 일단 다음에 생각하자",
-                tag: TAGS.POSTPONE
-            }
-        ]
-    },
-    {
-        id: 10,
-        category: "직장/진로",
-        icon: "🏢",
-        title: "취업 목표의 본심",
-        situation: "취준 중이다. \"대기업 가서 하나님 영광 드리겠다\"고 기도하는데, 문득 스스로에게 물어본다. 왜 대기업이어야 하지?",
-        choices: [
-            {
-                text: "...사실 연봉 높고 남들한테 인정받고 싶어서다",
-                tag: TAGS.HONEST_ADMIT
-            },
-            {
-                text: "영향력도 있고 헌금도 많이 할 수 있으니까 둘 다 맞는 거지",
-                tag: TAGS.PACKAGED_GREED
-            },
-            {
-                text: "하나님이 보내시는 곳이면 중소기업이어도 간다",
-                tag: TAGS.FAITH_FIRST
-            },
-            {
-                text: "솔직히 모르겠다. 내 동기가 뭔지 헷갈린다",
-                tag: TAGS.SELF_CHECK
-            }
-        ]
-    },
-    {
-        id: 11,
-        category: "재물관",
-        icon: "🍽️",
-        title: "후배에게 밥 사주기",
-        situation: "교회 후배가 요즘 힘들어 보인다. 밥 한끼 사주고 싶은데, 이번 달 내 생활비도 빠듯하다.",
-        choices: [
-            {
-                text: "내 형편이 안 되니까 다음에 사준다",
-                tag: TAGS.POSTPONE
-            },
-            {
-                text: "빠듯해도 사준다. 하나님이 채워주실 거다",
-                tag: TAGS.TRUST_GOD
-            },
-            {
-                text: "밥 대신 이야기라도 들어준다. 돈이 전부는 아니니까",
-                tag: TAGS.CONTENTMENT
-            },
-            {
-                text: "사주고 싶지만... 솔직히 내가 먼저 살고 봐야지",
-                tag: TAGS.HONEST_ADMIT
-            }
-        ]
-    },
-    {
-        id: 12,
-        category: "직장/진로",
-        icon: "🙏",
-        title: "졸업 후 미래",
-        situation: "졸업이 다가온다. 주변에서는 \"교회는 나중에, 지금은 스펙 쌓을 때\"라고 한다. 마음이 흔들린다.",
-        choices: [
-            {
-                text: "맞는 말이다. 현실적으로 준비하고 자리 잡으면 그때 열심히 하자",
-                tag: TAGS.POSTPONE
-            },
-            {
-                text: "취업 준비하면서도 예배와 공동체는 지킨다. 둘 다 놓지 않는다",
-                tag: TAGS.FAITH_FIRST
-            },
-            {
-                text: "스펙도 쌓고 교회도 가면... 아, 현실적으로 시간이 없다",
-                tag: TAGS.FUTURE_ANXIETY
-            },
-            {
-                text: "\"먼저 그의 나라와 의를 구하라\"는 말씀을 붙들어 본다",
-                tag: TAGS.TRUST_GOD
-            }
+            { text: "정확히 10%만 드린다. 이건 의무니까. 나머지는 내 자유", tag: TAGS.NINETY_PERCENT },
+            { text: "감사함으로 드린다. 100% 다 하나님 것인데 10%만 드리는 게 오히려 감사", tag: TAGS.STEWARD_CONFESS },
+            { text: "솔직히 아깝다. 이번 달은 좀 줄여야겠다", tag: TAGS.HONEST_ADMIT },
+            { text: "형식적으로 드리고 있었구나. 내 마음을 점검해야겠다", tag: TAGS.SELF_CHECK }
         ]
     }
 ];
 
-// 태그별 결과 메시지 & 연결 말씀
+// ===== 이벤트 칸 카드 (2개 + 추가 랜덤풀) =====
+const EVENT_CARDS = [
+    {
+        id: 1,
+        icon: "📱",
+        title: "갑작스런 지출",
+        situation: "핸드폰이 고장났다. 수리비 15만원. 친구가 \"그냥 새 거 사. 할부 되잖아\"라고 한다.",
+        choices: [
+            { text: "새 폰 할부로 산다. 어차피 바꿀 때 됐으니까", tag: TAGS.IMPULSE },
+            { text: "수리해서 쓴다. 당장 필요한 기능에 문제 없으니까", tag: TAGS.CONTENTMENT },
+            { text: "새 거 사고 싶다... 다들 최신폰 쓰는데 나만 구형이잖아", tag: TAGS.PEER_PRESSURE },
+            { text: "기도하고 결정한다. 조급하게 움직이지 않는다", tag: TAGS.PRAYER_DECIDE }
+        ]
+    },
+    {
+        id: 2,
+        icon: "🎁",
+        title: "예상치 못한 수입",
+        situation: "갑자기 할머니가 용돈 50만원을 주셨다. 예상 못한 돈이 생겼다.",
+        choices: [
+            { text: "바로 사고 싶은 거 산다. 공짜로 생긴 돈이니까 부담 없이!", tag: TAGS.IMPULSE },
+            { text: "일단 저축한다. 나중에 필요할 때 쓰자", tag: TAGS.SELF_CHECK },
+            { text: "감사헌금을 드린다. 예상 못한 은혜에 감사하며", tag: TAGS.STEWARD_CONFESS },
+            { text: "어려운 친구에게 밥 사주고 나머지는 저축한다", tag: TAGS.COMMUNITY }
+        ]
+    }
+];
+
+// ===== 나눔 칸 질문 =====
+const SHARING_CARDS = [
+    {
+        id: 1,
+        icon: "💬",
+        title: "서로에게 질문",
+        questions: [
+            "최근에 돈 때문에 가장 스트레스받은 적이 언제였나요?",
+            "\"이건 좀 충동구매였다\" 싶은 경험이 있나요?",
+            "나의 한 달 소비에서 가장 큰 비중은 뭔가요?",
+            "돈이 충분하면 가장 먼저 하고 싶은 것은?"
+        ],
+        instruction: "주사위를 굴려 나온 숫자에 해당하는 질문을 오른쪽 사람에게 물어보세요. (1~4 중 하나)"
+    },
+    {
+        id: 2,
+        icon: "💬",
+        title: "솔직한 나눔",
+        questions: [
+            "헌금/십일조 드릴 때 솔직한 내 마음은 어떤가요?",
+            "\"나중에 여유 생기면 더 잘 섬기겠다\"고 생각한 적 있나요?",
+            "돈을 벌고 싶은 진짜 이유, 솔직히 말해볼 수 있나요?",
+            "지금 내 삶에서 하나님보다 더 의지하고 있는 것이 있다면?"
+        ],
+        instruction: "주사위를 굴려 나온 숫자에 해당하는 질문에 전체가 돌아가며 대답해보세요. (1~4 중 하나)"
+    }
+];
+
+// ===== 태그별 결과 메시지 & 연결 말씀 =====
 const TAG_RESULTS = {
     [TAGS.PACKAGED_GREED]: {
         description: "하나님을 위한다는 이유로 내 욕심을 포장한 적이 많았습니다.",
@@ -340,8 +222,8 @@ const TAG_RESULTS = {
     },
     [TAGS.POSTPONE]: {
         description: "\"나중에\"를 반복하며 신앙적 결단을 미루는 경향이 있습니다.",
-        verse: "\"안식일에 만나를 거두러 나간 자들 — 결국 썩었다\" (출애굽기 16:20)",
-        question: "5년 전에도 \"나중에\"라고 했다면... 그 \"나중\"은 언제 올까요?"
+        verse: "\"안식일에 만나를 거두러 나간 자들의 만나는 썩었다\" (출애굽기 16:20)",
+        question: "\"여유 생기면 그때\"라고 했는데... 그 \"그때\"는 언제 올까요?"
     },
     [TAGS.IDOL_MONEY]: {
         description: "물질이 하나님보다 높은 자리를 차지하고 있을 수 있습니다.",
@@ -351,7 +233,7 @@ const TAG_RESULTS = {
     [TAGS.NINETY_PERCENT]: {
         description: "십일조 후 나머지는 \"내 것\"이라는 생각이 강했습니다.",
         verse: "\"오늘 밤 네 영혼을 도로 찾으리니 네 준비한 것이 누구의 것이 되겠느냐\" (누가복음 12:20)",
-        question: "10%를 드리는 것은, 나머지 90%도 하나님의 것이라는 고백인데... 정말 그렇게 살고 있나요?"
+        question: "10%를 드리는 것은 나머지 90%도 하나님의 것이라는 고백인데... 정말 그렇게 살고 있나요?"
     },
     [TAGS.SELF_RATIONALIZE]: {
         description: "그럴듯한 이유를 붙여 내 선택을 정당화하는 경향이 있습니다.",
@@ -359,9 +241,9 @@ const TAG_RESULTS = {
         question: "내가 만든 \"괜찮은 이유\"가 혹시 내 마음이 만들어낸 거짓은 아닐까요?"
     },
     [TAGS.HONEST_ADMIT]: {
-        description: "자신의 욕심과 한계를 솔직하게 인정했습니다.",
+        description: "자신의 욕심과 한계를 솔직하게 인정했습니다. 이것은 회개의 시작입니다.",
         verse: "\"진리를 알지니 진리가 너희를 자유롭게 하리라\" (요한복음 8:32)",
-        question: "솔직함은 회개의 시작입니다. 이 고백을 하나님 앞에 내어놓을 수 있나요?"
+        question: "솔직함은 변화의 첫 걸음입니다. 이 고백을 하나님 앞에 내어놓을 수 있나요?"
     },
     [TAGS.FAITH_FIRST]: {
         description: "물질보다 신앙을 우선순위에 둔 선택을 했습니다.",
@@ -391,12 +273,12 @@ const TAG_RESULTS = {
     [TAGS.SMALL_DISHONEST]: {
         description: "\"이 정도는 괜찮다\"며 작은 부정직을 허용했습니다.",
         verse: "\"지극히 작은 것에 충성된 자는 큰 것에도 충성되고\" (누가복음 16:10)",
-        question: "아무도 안 본다고 해도, 하나님은 보고 계십니다. 작은 것에 충성되고 있나요?"
+        question: "아무도 안 본다고 해도, 하나님은 보고 계십니다."
     },
     [TAGS.HONESTY]: {
         description: "손해를 감수하더라도 정직을 선택했습니다.",
         verse: "\"여호와여 주의 장막에 머무를 자 누구오니이까... 손해를 볼지라도 변하지 아니하는 자\" (시편 15:1,4)",
-        question: "정직으로 인해 손해를 봤을 때, 하나님이 그것을 기억하심을 믿나요?"
+        question: "정직으로 인해 손해를 봤을 때, 하나님이 기억하심을 믿나요?"
     },
     [TAGS.CONTENTMENT]: {
         description: "있는 것에 감사하고 만족하는 마음을 보였습니다.",
@@ -410,13 +292,13 @@ const TAG_RESULTS = {
     },
     [TAGS.FUTURE_ANXIETY]: {
         description: "미래에 대한 불안이 현재의 신앙적 결정을 흔들고 있습니다.",
-        verse: "\"그러므로 내일 일을 위하여 염려하지 말라 내일 일은 내일이 염려할 것이요\" (마태복음 6:34)",
+        verse: "\"그러므로 내일 일을 위하여 염려하지 말라\" (마태복음 6:34)",
         question: "불안이 나를 움직이게 할 때, 그 방향이 하나님을 향한 것인가요?"
     },
     [TAGS.IMPULSE]: {
         description: "순간적인 욕심에 따라 결정하는 경향이 있습니다.",
         verse: "\"망령되이 얻은 재물은 줄어가고 손으로 모은 것은 늘어가느니라\" (잠언 13:11)",
-        question: "\"지금 아니면 안 돼\"라는 조급함, 혹시 세상이 만들어낸 거짓 긴급함은 아닌가요?"
+        question: "\"지금 아니면 안 돼\"라는 조급함, 세상이 만들어낸 거짓 긴급함은 아닌가요?"
     },
     [TAGS.COMMUNITY]: {
         description: "혼자 감당하지 않고 공동체의 도움을 구했습니다.",
@@ -426,23 +308,16 @@ const TAG_RESULTS = {
     [TAGS.DECISION]: {
         description: "물질의 유혹 앞에서 과감한 결단을 내렸습니다.",
         verse: "\"네 오른손이 너로 실족하게 하거든 찍어 내버리라\" (마태복음 5:30)",
-        question: "이 결단을 지속할 수 있는 힘, 어디서 오나요? 혼자의 의지만으로 될까요?"
+        question: "이 결단을 지속할 수 있는 힘, 어디서 오나요?"
+    },
+    [TAGS.FOMO]: {
+        description: "\"나만 뒤처지는 것 같다\"는 두려움에 흔들렸습니다.",
+        verse: "\"사람이 수고하여 먹고 마시는 것이 하나님의 선물이라\" (전도서 3:13)",
+        question: "남들의 속도가 아닌, 하나님이 정하신 내 삶의 때를 신뢰할 수 있나요?"
+    },
+    [TAGS.SELF_WORTH_MONEY]: {
+        description: "돈이나 소비 수준이 내 가치를 결정한다고 느꼈습니다.",
+        verse: "\"사람의 생명이 그 소유의 넉넉한 데 있지 아니하니라\" (누가복음 12:15)",
+        question: "내 존재의 가치는 통장 잔고가 아닌 하나님의 형상에 있습니다. 이것을 믿나요?"
     }
 };
-
-// 보드 칸 이름 (12칸)
-const BOARD_CELLS = [
-    { name: "출발", type: "start" },
-    { name: "상황 1", type: "situation", cardIndex: 0 },
-    { name: "상황 2", type: "situation", cardIndex: 1 },
-    { name: "상황 3", type: "situation", cardIndex: 2 },
-    { name: "상황 4", type: "situation", cardIndex: 3 },
-    { name: "상황 5", type: "situation", cardIndex: 4 },
-    { name: "상황 6", type: "situation", cardIndex: 5 },
-    { name: "상황 7", type: "situation", cardIndex: 6 },
-    { name: "상황 8", type: "situation", cardIndex: 7 },
-    { name: "상황 9", type: "situation", cardIndex: 8 },
-    { name: "상황 10", type: "situation", cardIndex: 9 },
-    { name: "상황 11", type: "situation", cardIndex: 10 },
-    { name: "상황 12", type: "situation", cardIndex: 11 }
-];
