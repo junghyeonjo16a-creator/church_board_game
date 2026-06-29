@@ -13,7 +13,7 @@
             <h1>청지기 보드게임</h1>
             <p class="subtitle">학생용</p>
             <p class="description">
-                12칸의 여정 속에서 나의 선택을 돌아봅니다.<br>
+                선택의 순간마다 드러나는 나의 마음<br>
                 "네 보물이 있는 곳에 네 마음도 있느니라" (마태복음 6:21)
             </p>
             <div class="player-setup">
@@ -49,6 +49,10 @@
             <button id="roll-dice-btn" class="btn-dice">🎲 주사위 굴리기</button>
             <div id="dice-result" class="dice-result"></div>
         </div>
+        <div class="game-controls">
+            <button id="reset-btn" class="btn-control btn-reset">🔄 리셋</button>
+            <button id="end-btn" class="btn-control btn-end">🏁 종료</button>
+        </div>
 
         <!-- 모달 -->
         <div id="card-modal" class="modal hidden">
@@ -64,9 +68,8 @@
     <!-- 결과 화면 -->
     <div id="result-screen" class="screen">
         <div class="result-container">
-            <h1>🪞 나의 선택 리포트</h1>
             <div id="result-content"></div>
-            <button id="restart-btn" class="btn-primary">다시 하기</button>
+            <button id="restart-btn" class="btn-primary">처음으로</button>
         </div>
     </div>
 
