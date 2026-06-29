@@ -1,0 +1,759 @@
+/* ===== 기본 리셋 & 변수 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2c5f2d;
+    --primary-light: #4a8c4b;
+    --accent: #f4a261;
+    --accent-dark: #e76f51;
+    --bg: #faf8f0;
+    --card-bg: #ffffff;
+    --text: #2d2d2d;
+    --text-light: #666666;
+    --border: #e0ddd5;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+
+    /* 플레이어 색상 */
+    --player1: #e63946;
+    --player2: #457b9d;
+    --player3: #2a9d8f;
+    --player4: #e9c46a;
+}
+
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ===== 화면 전환 ===== */
+.screen {
+    display: none;
+    min-height: 100vh;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== 시작 화면 ===== */
+.start-container {
+    text-align: center;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.start-container h1 {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.start-container .subtitle {
+    font-size: 1.2rem;
+    color: var(--accent-dark);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.start-container .description {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 40px;
+    line-height: 1.8;
+}
+
+.player-setup {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.player-setup h3 {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: var(--primary);
+}
+
+.player-count {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.player-count label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.player-count select {
+    padding: 8px 16px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    background: white;
+    cursor: pointer;
+}
+
+#player-names {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-name-input {
+    padding: 10px 14px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+.player-name-input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+}
+
+/* ===== 버튼 ===== */
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-dice {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 16px 36px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+}
+
+.btn-dice:hover {
+    background: var(--accent-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-dice:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== 게임 화면 ===== */
+#game-screen.active {
+    justify-content: flex-start;
+    padding: 20px;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.game-header h2 {
+    color: var(--primary);
+    font-size: 1.4rem;
+}
+
+.turn-info {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.game-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* ===== 보드 ===== */
+.board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+    max-width: 700px;
+    aspect-ratio: 5 / 4;
+}
+
+.board-cell {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 4px;
+    position: relative;
+    transition: all 0.3s;
+    min-height: 70px;
+}
+
+.board-cell .cell-icon {
+    font-size: 1.2rem;
+    margin-bottom: 2px;
+}
+
+.board-cell .cell-name {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.board-cell.start-cell {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.board-cell.start-cell .cell-name {
+    color: white;
+    font-size: 0.8rem;
+}
+
+.board-cell.start-cell .cell-icon {
+    font-size: 1.4rem;
+}
+
+.board-cell.current-cell {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.3);
+    transform: scale(1.02);
+}
+
+.board-cell.visited-cell {
+    background: #f0f7f0;
+    border-color: var(--primary-light);
+}
+
+/* 플레이어 토큰 */
+.player-tokens {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.player-token {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.player-token.p0 { background: var(--player1); }
+.player-token.p1 { background: var(--player2); }
+.player-token.p2 { background: var(--player3); }
+.player-token.p3 { background: var(--player4); }
+
+/* 보드 배치 - 시계 방향 ㅁ자 형태 (13칸: 출발 + 12상황) */
+/* 위: 1,2,3,4,5 → 오른쪽: 6,7 → 아래: 8,9,10,11 → 왼쪽: 12,13 */
+.board-cell:nth-child(1)  { grid-column: 1; grid-row: 1; } /* 출발 */
+.board-cell:nth-child(2)  { grid-column: 2; grid-row: 1; }
+.board-cell:nth-child(3)  { grid-column: 3; grid-row: 1; }
+.board-cell:nth-child(4)  { grid-column: 4; grid-row: 1; }
+.board-cell:nth-child(5)  { grid-column: 5; grid-row: 1; }
+.board-cell:nth-child(6)  { grid-column: 5; grid-row: 2; }
+.board-cell:nth-child(7)  { grid-column: 5; grid-row: 3; }
+.board-cell:nth-child(8)  { grid-column: 5; grid-row: 4; }
+.board-cell:nth-child(9)  { grid-column: 4; grid-row: 4; }
+.board-cell:nth-child(10) { grid-column: 3; grid-row: 4; }
+.board-cell:nth-child(11) { grid-column: 2; grid-row: 4; }
+.board-cell:nth-child(12) { grid-column: 1; grid-row: 4; }
+.board-cell:nth-child(13) { grid-column: 1; grid-row: 3; }
+
+/* 보드 중앙 장식 영역 */
+.board::after {
+    content: "🪞 내 마음을 비추는 12가지 상황";
+    grid-column: 2 / 5;
+    grid-row: 2 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    text-align: center;
+    padding: 12px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+/* ===== 플레이어 패널 ===== */
+.player-panel {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 700px;
+}
+
+.player-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    min-width: 140px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.player-card.active-player {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.2);
+}
+
+.player-card .player-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.player-card .player-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.player-card .player-progress {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+/* ===== 주사위 영역 ===== */
+.dice-area {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.dice-result {
+    font-size: 2.5rem;
+    margin-top: 12px;
+    font-weight: 700;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 주사위 애니메이션 */
+@keyframes diceRoll {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) scale(1.2); }
+    50% { transform: rotate(180deg) scale(1); }
+    75% { transform: rotate(270deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+.dice-rolling {
+    animation: diceRoll 0.5s ease-in-out;
+}
+
+/* ===== 모달 (상황 카드) ===== */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 32px;
+    max-width: 550px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.card-category {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.card-situation {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 24px;
+    font-weight: 400;
+}
+
+.card-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.choice-btn {
+    background: #f8f6f0;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+}
+
+.choice-btn:hover {
+    border-color: var(--primary-light);
+    background: #f0f7f0;
+    transform: translateX(4px);
+}
+
+.choice-btn .choice-number {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+/* ===== 결과 화면 ===== */
+#result-screen.active {
+    justify-content: flex-start;
+    padding: 40px 20px;
+}
+
+.result-container {
+    max-width: 650px;
+    width: 100%;
+}
+
+.result-container h1 {
+    text-align: center;
+    color: var(--primary);
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+}
+
+.result-player-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+}
+
+.result-player-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.result-chart {
+    margin-bottom: 24px;
+}
+
+.result-bar-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.result-bar-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    min-width: 100px;
+    color: var(--text);
+}
+
+.result-bar-track {
+    flex: 1;
+    background: #eee;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.result-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease-out;
+    min-width: 2px;
+}
+
+.result-bar-count {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    min-width: 30px;
+}
+
+/* 태그별 바 색상 */
+.bar-negative { background: #e63946; }
+.bar-neutral { background: #f4a261; }
+.bar-positive { background: #2a9d8f; }
+.bar-honest { background: #457b9d; }
+
+.result-top-tag {
+    background: #f8f6f0;
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.result-top-tag h4 {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.result-top-tag .tag-description {
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.result-top-tag .tag-verse {
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.result-top-tag .tag-question {
+    font-size: 0.9rem;
+    color: var(--accent-dark);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.result-choices-log {
+    margin-top: 20px;
+}
+
+.result-choices-log h4 {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 12px;
+}
+
+.choice-log-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+}
+
+.choice-log-item:last-child {
+    border-bottom: none;
+}
+
+.choice-log-num {
+    font-weight: 700;
+    color: var(--primary);
+    min-width: 20px;
+}
+
+.choice-log-text {
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.choice-log-tag {
+    color: var(--text-light);
+    font-size: 0.72rem;
+    margin-top: 3px;
+}
+
+/* 나눔 질문 섹션 */
+.sharing-questions {
+    background: var(--primary);
+    color: white;
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.sharing-questions h3 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+.sharing-questions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sharing-questions li {
+    padding: 8px 0;
+    padding-left: 20px;
+    position: relative;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.sharing-questions li::before {
+    content: "?";
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 600px) {
+    .board {
+        gap: 4px;
+    }
+
+    .board-cell {
+        min-height: 55px;
+        padding: 4px 2px;
+    }
+
+    .board-cell .cell-icon {
+        font-size: 1rem;
+    }
+
+    .board-cell .cell-name {
+        font-size: 0.55rem;
+    }
+
+    .player-token {
+        width: 10px;
+        height: 10px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .card-situation {
+        font-size: 0.95rem;
+    }
+
+    .choice-btn {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+
+    .start-container h1 {
+        font-size: 2rem;
+    }
+
+    .player-panel {
+        gap: 8px;
+    }
+
+    .player-card {
+        min-width: 110px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    .board {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 3px;
+    }
+
+    .board-cell {
+        min-height: 45px;
+    }
+
+    .board-cell .cell-name {
+        font-size: 0.5rem;
+    }
+}

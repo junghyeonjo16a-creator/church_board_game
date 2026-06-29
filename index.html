@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>청지기 보드게임 - 학생용</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 시작 화면 -->
+    <div id="start-screen" class="screen active">
+        <div class="start-container">
+            <h1>청지기 보드게임</h1>
+            <p class="subtitle">학생용</p>
+            <p class="description">12개의 상황 속에서 나의 선택을 돌아봅니다.<br>"네 보물이 있는 곳에 네 마음도 있느니라" (마태복음 6:21)</p>
+            
+            <div class="player-setup">
+                <h3>플레이어 설정</h3>
+                <div class="player-count">
+                    <label>인원 수:</label>
+                    <select id="player-count-select">
+                        <option value="2">2명</option>
+                        <option value="3">3명</option>
+                        <option value="4">4명</option>
+                    </select>
+                </div>
+                <div id="player-names">
+                    <input type="text" class="player-name-input" placeholder="플레이어 1 이름" data-index="0">
+                    <input type="text" class="player-name-input" placeholder="플레이어 2 이름" data-index="1">
+                </div>
+            </div>
+            
+            <button id="start-btn" class="btn-primary">게임 시작</button>
+        </div>
+    </div>
+
+    <!-- 게임 화면 -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <h2>청지기 보드게임</h2>
+            <div id="turn-info" class="turn-info"></div>
+        </div>
+
+        <div class="game-layout">
+            <!-- 보드 -->
+            <div id="board" class="board">
+                <!-- 12칸이 JS로 생성됨 -->
+            </div>
+
+            <!-- 플레이어 정보 -->
+            <div id="player-panel" class="player-panel">
+                <!-- JS로 생성됨 -->
+            </div>
+        </div>
+
+        <!-- 주사위 영역 -->
+        <div id="dice-area" class="dice-area">
+            <button id="roll-dice-btn" class="btn-dice">주사위 굴리기</button>
+            <div id="dice-result" class="dice-result"></div>
+        </div>
+
+        <!-- 상황 카드 모달 -->
+        <div id="card-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="card-category" id="card-category"></div>
+                <h3 class="card-situation" id="card-situation"></h3>
+                <div class="card-choices" id="card-choices">
+                    <!-- 선택지 버튼들 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div id="result-screen" class="screen">
+        <div class="result-container">
+            <h1>나의 선택 리포트</h1>
+            <div id="result-content">
+                <!-- JS로 생성됨 -->
+            </div>
+            <button id="restart-btn" class="btn-primary">다시 하기</button>
+        </div>
+    </div>
+
+    <script src="game-data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
