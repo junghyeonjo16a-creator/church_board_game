@@ -1,79 +1,75 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>청지기 보드게임 - 학생용</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>청지기 브루마블 - 학생용</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#2c5f2d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="청지기 브루마블">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app-mobile.css">
 </head>
 <body>
-    <!-- 시작 화면 -->
-    <div id="start-screen" class="screen active">
-        <div class="start-container">
-            <h1>청지기 보드게임</h1>
-            <p class="subtitle">학생용</p>
-            <p class="description">
-                선택의 순간마다 드러나는 나의 마음<br>
-                "네 보물이 있는 곳에 네 마음도 있느니라" (마태복음 6:21)
-            </p>
-            <div class="player-setup">
-                <h3>플레이어 설정</h3>
-                <div class="player-count">
-                    <label>인원 수:</label>
-                    <select id="player-count-select">
-                        <option value="2">2명</option>
-                        <option value="3">3명</option>
-                        <option value="4">4명</option>
-                    </select>
-                </div>
-                <div id="player-names">
-                    <input type="text" class="player-name-input" placeholder="플레이어 1 이름">
-                    <input type="text" class="player-name-input" placeholder="플레이어 2 이름">
-                </div>
-            </div>
-            <button id="start-btn" class="btn-primary">게임 시작</button>
+  <div id="start-screen" class="screen active">
+    <div class="start-container">
+      <p class="subtitle">학생용</p>
+      <h1>청지기 브루마블</h1>
+      <p class="description">선택의 순간마다 드러나는 나의 마음<br>"네 보물이 있는 곳에는 네 마음도 있느니라" (마태복음 6:21)</p>
+      <div class="player-setup">
+        <h3>플레이어 설정</h3>
+        <div class="player-count">
+          <label for="player-count-select">인원 수</label>
+          <select id="player-count-select"><option value="2">2명</option><option value="3">3명</option><option value="4">4명</option></select>
         </div>
+        <div id="player-names">
+          <input type="text" class="player-name-input" placeholder="플레이어 1 이름">
+          <input type="text" class="player-name-input" placeholder="플레이어 2 이름">
+        </div>
+      </div>
+      <button id="start-btn" class="btn-primary">게임 시작</button>
     </div>
+  </div>
 
-    <!-- 게임 화면 -->
-    <div id="game-screen" class="screen">
-        <div class="game-header">
-            <h2>청지기 보드게임 <span class="badge">학생용</span></h2>
-            <div id="turn-info" class="turn-info"></div>
-        </div>
-        <div class="game-layout">
-            <div id="board" class="board"></div>
-            <div id="player-panel" class="player-panel"></div>
-        </div>
-        <div class="dice-area">
-            <button id="roll-dice-btn" class="btn-dice">🎲 주사위 굴리기</button>
-            <div id="dice-result" class="dice-result"></div>
-        </div>
-        <div class="game-controls">
-            <button id="reset-btn" class="btn-control btn-reset">🔄 리셋</button>
-            <button id="end-btn" class="btn-control btn-end">🏁 종료</button>
-        </div>
-
-        <!-- 모달 -->
-        <div id="card-modal" class="modal hidden">
-            <div class="modal-content">
-                <div class="card-category" id="card-category"></div>
-                <h3 class="card-title" id="card-title"></h3>
-                <p class="card-situation" id="card-situation"></p>
-                <div class="card-choices" id="card-choices"></div>
-            </div>
-        </div>
+  <div id="game-screen" class="screen">
+    <div class="game-header">
+      <h2>청지기 브루마블 <span class="badge">학생용</span></h2>
+      <div id="turn-info" class="turn-info"></div>
     </div>
-
-    <!-- 결과 화면 -->
-    <div id="result-screen" class="screen">
-        <div class="result-container">
-            <div id="result-content"></div>
-            <button id="restart-btn" class="btn-primary">처음으로</button>
-        </div>
+    <div class="game-layout">
+      <div id="board" class="board"></div>
+      <div id="player-panel" class="player-panel"></div>
     </div>
+    <div class="dice-area">
+      <button id="roll-dice-btn" class="btn-dice">주사위 굴리기</button>
+      <div id="dice-result" class="dice-result"></div>
+    </div>
+    <div class="game-controls">
+      <button id="reset-btn" class="btn-control btn-reset">리셋</button>
+      <button id="end-btn" class="btn-control btn-end">결과 보기</button>
+    </div>
+    <div id="card-modal" class="modal hidden">
+      <div class="modal-content">
+        <div class="card-category" id="card-category"></div>
+        <h3 class="card-title" id="card-title"></h3>
+        <p class="card-situation" id="card-situation"></p>
+        <div id="card-choices" class="card-choices"></div>
+      </div>
+    </div>
+  </div>
 
-    <script src="game-data.js"></script>
-    <script src="game.js"></script>
+  <div id="result-screen" class="screen">
+    <div class="result-container">
+      <div id="result-content"></div>
+      <button id="restart-btn" class="btn-primary">처음으로</button>
+    </div>
+  </div>
+
+  <script src="game-data.js"></script>
+  <script src="game.js"></script>
+  <script src="mobile.js"></script>
 </body>
 </html>
